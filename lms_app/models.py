@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 # Create your models here.
 from django.db import models
@@ -29,7 +30,7 @@ class Book(models.Model):
     author = models.CharField(max_length=255)
     isbn = models.CharField(max_length=13, unique=True)
     publisher = models.CharField(max_length=255)
-    publication_date = models.DateField()
+    publication_date = models.DateField(default=datetime.now())
     genre = models.CharField(max_length=100)
     book_count = models.IntegerField(default=1)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=1)
