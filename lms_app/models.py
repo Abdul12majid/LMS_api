@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 from django.db import models
@@ -11,9 +12,9 @@ class Book(models.Model):
     publication_date = models.DateField()
     genre = models.CharField(max_length=100)
     book_count = models.IntegerField(default=1)
-    status = models.CharField(max_length=20, default='available')
+    #status = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     due_date = models.DateField(null=True, blank=True)
-    borrower = models.CharField(max_length=255, null=True, blank=True)
+    #borrower = models.ManyToManyField(User, blank=True)
     cover_image = models.URLField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     keywords = models.TextField(null=True, blank=True)
@@ -25,6 +26,7 @@ class Book(models.Model):
 
 class Category(models.Model):
 	category_name = models.CharField(max_length=255, null=True, blank=True)
+	
 	class Meta:
 		verbose_name_plural = 'Categories'
 
