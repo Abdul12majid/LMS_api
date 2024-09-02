@@ -4,6 +4,26 @@ from django.contrib.auth.models import User
 # Create your models here.
 from django.db import models
 
+
+class Category(models.Model):
+	category_name = models.CharField(max_length=255, null=True, blank=True)
+
+	class Meta:
+		verbose_name_plural = 'Categories'
+
+	def __str__(self):
+		return self.category_name
+
+class Status(models.Model):
+	status_name = models.CharField(max_length=255, null=True, blank=True)
+
+	class Meta:
+		verbose_name_plural = 'Status'
+
+	def __str__(self):
+		return self.status_name
+
+
 class Book(models.Model):
     book_name = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
@@ -12,7 +32,8 @@ class Book(models.Model):
     publication_date = models.DateField()
     genre = models.CharField(max_length=100)
     book_count = models.IntegerField(default=1)
-    #status = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, default=1)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     due_date = models.DateField(null=True, blank=True)
     #borrower = models.ManyToManyField(User, blank=True)
     cover_image = models.URLField(null=True, blank=True)
@@ -22,13 +43,3 @@ class Book(models.Model):
 
     def __str__(self):
         return self.book_name
-
-
-class Category(models.Model):
-	category_name = models.CharField(max_length=255, null=True, blank=True)
-	
-	class Meta:
-		verbose_name_plural = 'Categories'
-
-	def __str__(self):
-        return self.category_name
