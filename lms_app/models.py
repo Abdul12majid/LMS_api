@@ -21,3 +21,12 @@ class Book(models.Model):
 
     def __str__(self):
         return self.book_name
+
+
+class Category(models.Model):
+	category_name = models.CharField(max_length=255, null=True, blank=True)
+	class Meta:
+		verbose_name_plural = 'Categories'
+
+	def __str__(self):
+        return self.category_name
