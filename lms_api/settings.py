@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'lms_app',
     'rest_framework',
     'import_export',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
