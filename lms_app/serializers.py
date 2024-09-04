@@ -12,3 +12,7 @@ class Book_serializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ('id', 'book_name', 'author', 'status', 'category', 'description',)
+
+
+class MySerializer(serializers.Serializer):
+    keywords=serializers.CharField(max_length=500)
