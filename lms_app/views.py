@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
@@ -16,6 +17,7 @@ class all_books(ListCreateAPIView):
 	filter_backends = [DjangoFilterBackend, SearchFilter]
 	search_fields = ['book_name', 'description']
 	filterset_fields = ['category_id']
+	pagination_class = PageNumberPagination
 
 
 class book_info(RetrieveUpdateDestroyAPIView):
