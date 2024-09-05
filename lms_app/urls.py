@@ -5,6 +5,7 @@ urlpatterns = [
     path("books", views.all_books.as_view()),
     path("books/<str:pk>", views.book_info.as_view()),
     path("find_book", views.find_book),
-    path("search/<str:pk>", views.search),
+    path("find_book/<str:pk>", views.search),
+    path("create_user", views.create_user),
 
 ]

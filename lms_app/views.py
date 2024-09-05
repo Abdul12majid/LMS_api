@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponse
 from rest_framework.viewsets import ModelViewSet
-from .serializers import Book_serializer, MySerializer
+from .serializers import Book_serializer, MySerializer, SignUpSerializer
 from .models import Book
+from rest_framework import status
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -54,4 +55,17 @@ def search(request, pk):
 		print("not found")
 		return Response({'Info':'Book not found'})
 	return Response({'Info':'Search Book'})
-	
+
+
+@api_view(['POST', 'GET'])
+def create_user(request):
+	serializer = SignUpSerializer(data=request.data)
+	if serializer.is_valid():
+		serializer.save()
+		response = {
+			"message":"user created successfully",
+			"data": serializer.data
+			}
+		return Response(data=response, status=status.HTTP_201_CREATED)
+
+	return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
