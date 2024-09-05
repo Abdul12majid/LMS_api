@@ -48,6 +48,7 @@ class Book(models.Model):
 class Profile(models.Model):
     user=models.OneToOneField(User, on_delete=models.CASCADE)
     books_borrowed = models.ManyToManyField(Book, related_name='borrowed_books', symmetrical=False, blank=True)
+    book_count = models.IntegerField(default=0)
     date_modified=models.DateTimeField(auto_now=True)
     profile_image = models.URLField(null=True, blank=True)
     profile_bio=models.CharField(null=True, blank=True, max_length=500)

@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponse
 from rest_framework.viewsets import ModelViewSet
 from .serializers import Book_serializer, MySerializer, SignUpSerializer
-from .models import Book
+from .models import Book, Profile
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -69,3 +70,21 @@ def create_user(request):
 		return Response(data=response, status=status.HTTP_201_CREATED)
 
 	return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def borrow_book(request, pk):
+	user = User.objects.get(id=3)
+	get_book = Book.objects.filter(id=pk).exists()
+	if get_book:
+		the_book = Book.objects.get(id=pk)
+		serializer = Book_serializer(the_book)
+		add_book = user.profile.books_borrowed.add(the_book)
+		user.profile.book_count+=1
+		user.profile.save()
+		print("Successful")
+		return Response({'Borrowed Book':serializer.data})
+	else:
+		print("not found")
+		return Response({'Info':'Book not found'})
+	return Response({'Info':'Borrow Book'})
