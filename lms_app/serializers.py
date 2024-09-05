@@ -23,22 +23,16 @@ class SignUpSerializer(serializers.ModelSerializer):
     email = serializers.CharField(max_length=50)
     username = serializers.CharField(max_length=50)
     password = serializers.CharField(min_length=8, write_only=True, max_length=50)
-    confirm_password = serializers.CharField(min_length=8, write_only=True, max_length=50)
     
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'confirm_password']
+        fields = ['email', 'username', 'password']
 
     def validate(self, attrs):
-
-        if attrs['password'] != attrs['confirm_password']:
-            raise ValidationError("Passwords do not match")
-
         email_exists = User.objects.filter(email=attrs['email']).exists()
         if email_exists:
             raise ValidationError("Email has been used")
-
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -46,3 +40,4 @@ class SignUpSerializer(serializers.ModelSerializer):
         user = super().create(validated_data)
         user.set_password(password)
         user.save()
+        return user
