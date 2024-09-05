@@ -24,13 +24,32 @@ class book_info(RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['POST', 'GET'])
-def find_book(request, pk):
-    serializer = MySerializer(data=request.data)
+def find_book(request):
+	#get_book = Book.objects.filter(book_name__contains=pk)
+	serializer = MySerializer(data=request.data)
+	if serializer.is_valid():
+		keyword = request.data['keywords']
+		get_book = Book.objects.filter(book_name__contains=keyword).exists()
+		if get_book:
+			book_result = Book.objects.filter(book_name__contains=keyword)
+			serializer_class = Book_serializer(book_result, many=True)
+			print(keyword)
+			return Response({'Info':serializer_class.data})
+		else:
+			return Response({'Info':'Book not found'})	
+	return Response({'Info':'input parameters'})
 
-    if serializer.is_valid():
-        pk = serializer.validated_data['keywords']
-        books = Book.objects.filter(book_name__icontains=pk)
-        # Process the found books and return a response
-        return Response({'books': books})
-    else:
-        return Response({'error': serializer.errors}, status=400)
+
+@api_view(['GET'])
+def search(request, pk):
+	get_book = Book.objects.filter(book_name__contains=pk).exists()
+	if get_book:
+		print("Found")
+		book_result = Book.objects.filter(book_name__contains=pk)
+		serializer_class = Book_serializer(book_result, many=True)
+		return Response({'Info':serializer_class.data})
+	else:
+		print("not found")
+		return Response({'Info':'Book not found'})
+	return Response({'Info':'Search Book'})
+	
