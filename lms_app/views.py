@@ -1,6 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from rest_framework.viewsets import ModelViewSet
-from .serializers import Book_serializer, MySerializer, SignUpSerializer
+from .serializers import Book_serializer, LoginSerializer, MySerializer, SignUpSerializer
 from .models import Book, Profile
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -9,6 +9,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout, authenticate
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
@@ -88,3 +90,24 @@ def borrow_book(request, pk):
 		print("not found")
 		return Response({'Info':'Book not found'})
 	return Response({'Info':'Borrow Book'})
+
+
+@api_view(['POST', 'GET'])
+def login_user(request):
+	serializer = LoginSerializer(data=request.data)
+	if serializer.is_valid():
+		username = request.data['username']
+		password = request.data['password']
+		user = authenticate(request, username=username, password=password)
+		if user is not None:
+			login(request, user)
+			return Response({'Info': "Login successful"})
+		else:
+			return Response({'Error': "Incorrect password or username"})
+	return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def logout_user(request):
+	logout(request)
+	return Response({'Info': "You've been logged out."})

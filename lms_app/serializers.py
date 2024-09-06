@@ -30,9 +30,12 @@ class SignUpSerializer(serializers.ModelSerializer):
         fields = ['email', 'username', 'password']
 
     def validate(self, attrs):
+        username_exists = User.objects.filter(username=attrs['username']).exists()
         email_exists = User.objects.filter(email=attrs['email']).exists()
-        if email_exists:
-            raise ValidationError("Email has been used")
+        if username_exists:
+            raise ValidationError("username has been used")
+        elif email_exists:
+                raise ValidationError("Email has been used")
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -41,3 +44,8 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=500)
+    password = serializers.CharField(max_length=500, write_only=True)
