@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 # Create your views here.
@@ -74,6 +75,7 @@ def create_user(request):
 	return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@login_required(login_url='login-user')
 @api_view(['GET'])
 def borrow_book(request, pk):
 	user = User.objects.get(id=3)
