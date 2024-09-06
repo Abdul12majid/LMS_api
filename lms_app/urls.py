@@ -7,5 +7,6 @@ urlpatterns = [
     path("find_book", views.find_book),
     path("find_book/<str:pk>", views.search),
     path("borrow_book/<int:pk>", views.borrow_book),
+    path("return_book/<int:pk>", views.return_book),
 
 ]

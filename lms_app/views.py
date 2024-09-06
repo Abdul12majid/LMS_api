@@ -79,3 +79,22 @@ def borrow_book(request, pk):
 		return Response({'Info':'Book not found'})
 	return Response({'Info':'Borrow Book'})
 
+
+@login_required(login_url='login-user')
+@api_view(['GET'])
+def return_book(request, pk):
+	user_id = request.user.id
+	user = User.objects.get(id=user_id)
+	get_book = Book.objects.filter(id=pk).exists()
+	if get_book:
+		the_book = Book.objects.get(id=pk)
+		serializer = Book_serializer(the_book)
+		add_book = user.profile.books_borrowed.remove(the_book)
+		user.profile.book_count-=1
+		user.profile.save()
+		print("Successful")
+		return Response({'Successfully returned':serializer.data})
+	else:
+		return Response({'Info':'Book does not exist, kindly check id and retry.'})
+	return Response({'Info':'Borrow Book'})
+
