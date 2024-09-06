@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.validators import ValidationError
+from lms_app.models import Book
+
 
 class SignUpSerializer(serializers.ModelSerializer):
     email = serializers.CharField(max_length=50)
@@ -32,3 +34,12 @@ class SignUpSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=500)
     password = serializers.CharField(max_length=500, write_only=True)
+
+
+class BookSerializer(serializers.ModelSerializer):
+    book_name = serializers.CharField(max_length=255)
+    author = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = Book
+        fields = ('id', 'book_name', 'author',)

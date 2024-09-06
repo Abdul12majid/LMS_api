@@ -63,7 +63,8 @@ def search(request, pk):
 @login_required(login_url='login-user')
 @api_view(['GET'])
 def borrow_book(request, pk):
-	user = User.objects.get(id=3)
+	user_id = request.user.id
+	user = User.objects.get(id=user_id)
 	get_book = Book.objects.filter(id=pk).exists()
 	if get_book:
 		the_book = Book.objects.get(id=pk)
