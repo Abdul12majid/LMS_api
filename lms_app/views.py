@@ -66,21 +66,34 @@ def borrow_book(request, pk):
 	user_id = request.user.id
 	user = User.objects.get(id=user_id)
 	get_book = Book.objects.filter(id=pk).exists()
+	print(user.profile.books_borrowed.all().count())
 	if get_book:
 		the_book = Book.objects.get(id=pk)
 		serializer = Book_serializer(the_book)
-		if user.profile.books_borrowed.all().count() <= 2:
 
-			if the_book.book_count != 0:
-				add_book = user.profile.books_borrowed.add(the_book)
-				user.profile.book_count+=1
-				user.profile.save()
-				print("Successful")
-				return Response({'Borrowed Book':serializer.data})
-			else:
-				return Response({'info':"book out of stock, check back later."})
-		else:
+		#condition 1
+		if user.profile.books_borrowed.all().count() <= 2:
 			return Response({'info':"unable to borrow book, book limit reach."})
+
+		#condition 2
+		if the_book.book_count != 0:
+			return Response({'info':"book out of stock, check back later."})
+
+		#condition 3
+		if the_book in user.profile.books_borrowed.all():
+			return Response({'info':"Book already at hand."})
+
+		add_book = user.profile.books_borrowed.add(the_book)
+		user.profile.book_count+=1
+		user.profile.save()
+
+		#remove from book model
+		the_book.book_count -=1
+		the_book.save()
+
+		print("Successful")
+		return Response({'Borrowed Book':serializer.data})
+			
 	else:
 		print("not found")
 		return Response({'Info':'Book not found'})
@@ -99,6 +112,10 @@ def return_book(request, pk):
 		add_book = user.profile.books_borrowed.remove(the_book)
 		user.profile.book_count-=1
 		user.profile.save()
+
+		#add to book model
+		the_book.book_count +=1
+		the_book.save()
 		print("Successful")
 		return Response({'Successfully returned':serializer.data})
 	else:
