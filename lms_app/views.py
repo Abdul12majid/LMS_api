@@ -69,11 +69,14 @@ def borrow_book(request, pk):
 	if get_book:
 		the_book = Book.objects.get(id=pk)
 		serializer = Book_serializer(the_book)
-		add_book = user.profile.books_borrowed.add(the_book)
-		user.profile.book_count+=1
-		user.profile.save()
-		print("Successful")
-		return Response({'Borrowed Book':serializer.data})
+		if user.profile.books_borrowed.all().count() <= 2:
+			add_book = user.profile.books_borrowed.add(the_book)
+			user.profile.book_count+=1
+			user.profile.save()
+			print("Successful")
+			return Response({'Borrowed Book':serializer.data})
+		else:
+			return Response({'info':"unable to borrow book, book limit reach."})
 	else:
 		print("not found")
 		return Response({'Info':'Book not found'})
