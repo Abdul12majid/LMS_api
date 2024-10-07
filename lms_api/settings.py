@@ -60,7 +60,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'lms_api.urls'
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 3  
+    'PAGE_SIZE': 10  
 }
 
 TEMPLATES = [
