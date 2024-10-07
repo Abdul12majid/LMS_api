@@ -72,23 +72,25 @@ def borrow_book(request, pk):
 		serializer = Book_serializer(the_book)
 
 		#condition 1
-		if user.profile.books_borrowed.all().count() <= 2:
+		if user.profile.books_borrowed.all().count() > 2:
 			return Response({'info':"unable to borrow book, book limit reach."})
 
 		#condition 2
-		if the_book.book_count != 0:
+		if the_book.book_count == 0:
 			return Response({'info':"book out of stock, check back later."})
 
 		#condition 3
 		if the_book in user.profile.books_borrowed.all():
 			return Response({'info':"Book already at hand."})
 
+		#add to profile
 		add_book = user.profile.books_borrowed.add(the_book)
 		user.profile.book_count+=1
 		user.profile.save()
 
-		#remove from book model
+		#remove and add borrower from/to book model
 		the_book.book_count -=1
+		the_book.borrower.add(user)
 		the_book.save()
 
 		print("Successful")
