@@ -31,7 +31,7 @@ class Book(models.Model):
     publisher = models.CharField(max_length=255)
     publication_date = models.DateField(default=datetime.now())
     genre = models.CharField(max_length=100)
-    book_count = models.IntegerField(default=1)
+    book_count = models.IntegerField(default=0)
     borrower = models.ManyToManyField(User, blank=True)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, default=1)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
